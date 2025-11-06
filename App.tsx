@@ -47,7 +47,7 @@ const App: React.FC = () => {
   const handleDownloadHtml = () => {
     if (!explanationRef.current || !explanation) return;
 
-    const content = explanationRef.current.innerHTML;
+    const content = explanationRef.current.outerHTML; // Use outerHTML to include the ExplanationDisplay's root div
     const fullHtml = `
       <!DOCTYPE html>
       <html lang="zh-CN">
@@ -56,9 +56,17 @@ const App: React.FC = () => {
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>${explanation.mainTitle}</title>
           <script src="https://cdn.tailwindcss.com"></script>
+          <style>
+            /* Ensure the body and root container take up full height */
+            html, body, #root {
+              height: 100%;
+            }
+          </style>
         </head>
         <body class="bg-slate-100">
-          ${content}
+          <div class="min-h-screen font-sans text-slate-800 p-4 sm:p-6 md:p-8">
+            ${content}
+          </div>
         </body>
       </html>
     `;
