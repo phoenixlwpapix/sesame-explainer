@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { generateExplanation } from './services/geminiService';
 import type { ExplanationResponse } from './types';
@@ -131,7 +132,8 @@ const App: React.FC = () => {
     const headerElement = sourceElement.querySelector('.text-center');
     const sectionElements = sourceElement.querySelectorAll('.bg-white.rounded-xl.shadow-sm');
 
-    if (!headerElement || sectionElements.length === 0) {
+    // Fix: Correctly check if sectionElements is empty
+    if (sectionElements.length === 0) {
       setError('无法找到内容元素来生成图片。');
       setIsSlicing(false);
       return;
@@ -159,8 +161,17 @@ const App: React.FC = () => {
       sliceContainer.style.flexDirection = 'column';
       sliceContainer.style.justifyContent = 'center';
 
-      // Add header
-      sliceContainer.appendChild(headerElement.cloneNode(true));
+      // Add header ONLY to the first image
+      if (i === 0 && headerElement) {
+        const clonedHeader = headerElement.cloneNode(true) as HTMLElement;
+        // Adjust margin-bottom for the header in the first slice
+        clonedHeader.style.marginBottom = '2rem'; 
+        sliceContainer.appendChild(clonedHeader);
+      } else {
+        // For subsequent slices, add some top padding if no header is present,
+        // to keep content visually consistent or centered.
+        sliceContainer.style.paddingTop = '4rem'; 
+      }
 
       // Add the single section
       const section = sectionElements[i];
