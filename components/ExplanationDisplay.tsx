@@ -158,12 +158,37 @@ const SectionCard: React.FC<{ section: Section, onChipClick: (chipName: string) 
   );
 };
 
-const ExplanationDisplay: React.FC<{ data: ExplanationResponse, containerRef: React.Ref<HTMLDivElement>, onChipClick: (chipName: string) => void }> = ({ data, containerRef, onChipClick }) => {
+interface ExplanationDisplayProps {
+  data: ExplanationResponse;
+  containerRef: React.Ref<HTMLDivElement>;
+  onChipClick: (chipName: string) => void;
+  currentTopic: string;
+}
+
+const ExplanationDisplay: React.FC<ExplanationDisplayProps> = ({ data, containerRef, onChipClick, currentTopic }) => {
+  const titleFromApi = data.mainTitle || '';
+  // Use regex to find the first colon (either full-width or half-width)
+  const separatorMatch = titleFromApi.match(/[:：]/);
+  
+  const displayTitle = currentTopic;
+  let displaySubtitle = data.subtitle;
+
+  if (separatorMatch) {
+    const separatorIndex = separatorMatch.index;
+    const potentialSubtitle = typeof separatorIndex === 'number' ? titleFromApi.substring(separatorIndex + 1).trim() : '';
+    if (potentialSubtitle) {
+        displaySubtitle = potentialSubtitle;
+    }
+  }
+
   return (
     <div ref={containerRef} className="max-w-4xl mx-auto my-8 p-4 md:p-8 bg-[#fffdfa] dark:bg-slate-800/50 rounded-2xl shadow-lg dark:shadow-xl dark:shadow-slate-950/50">
       <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-[#2d3336] dark:text-slate-100 tracking-tight"><SimpleMarkdown text={data.mainTitle} /></h1>
-        <p className="mt-2 text-[#2d3336] dark:text-slate-300"><SimpleMarkdown text={data.subtitle} /></p>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-[#2d3336] dark:text-slate-100 tracking-tight"><SimpleMarkdown text={displayTitle} /></h1>
+        <p className="mt-2 text-lg text-[#2d3336] dark:text-slate-300">
+          {data.topicEmoji && <span className="mr-2">{data.topicEmoji}</span>}
+          <SimpleMarkdown text={displaySubtitle} />
+        </p>
       </div>
       {data.sections.map(section => (
         <SectionCard key={section.step} section={section} onChipClick={onChipClick} />

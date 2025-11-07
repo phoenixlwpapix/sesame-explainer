@@ -36,5 +36,6 @@ export interface Section {
 export interface ExplanationResponse {
   mainTitle: string;
   subtitle: string;
+  topicEmoji: string;
   sections: Section[];
 }

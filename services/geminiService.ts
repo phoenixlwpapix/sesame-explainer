@@ -8,6 +8,7 @@ const responseSchema = {
     properties: {
         mainTitle: { type: Type.STRING, description: "Main title of the explanation, based on the topic." },
         subtitle: { type: Type.STRING, description: "A short, friendly subtitle, like 'A simple guide for beginners'." },
+        topicEmoji: { type: Type.STRING, description: "A single, relevant emoji that represents the main topic." },
         sections: {
             type: Type.ARRAY,
             description: "An array of 7 sections explaining the topic.",
@@ -35,7 +36,7 @@ const responseSchema = {
             }
         }
     },
-    required: ["mainTitle", "subtitle", "sections"]
+    required: ["mainTitle", "subtitle", "topicEmoji", "sections"]
 };
 
 export const generateExplanation = async (topic: string): Promise<ExplanationResponse> => {
@@ -51,14 +52,15 @@ export const generateExplanation = async (topic: string): Promise<ExplanationRes
 5. **禁止格式**：不要输出任何 Markdown 标记（如\`\`\`json），只返回一个有效 JSON。
 6. **完整性**：所有 7 个步骤必须齐全，不得省略。每步内容要丰富但不过长，适合小白快速理解。
 7. **字段完整性**：对于每个步骤，请确保其 \`content\` 对象中包含模板所要求的全部核心字段。例如，第 6 步必须同时包含 \`tool_chips\` 和 \`summary\`。
+8. **主题表情符号 (topicEmoji)**: 请在顶层对象中提供一个与主题“${topic}”最相关的单个表情符号。
 
 **结构模板 (请严格遵循每个步骤要求的数据填充方式):**
 - 第1步 (INFO): 核心概念：它是什么？ (内容填充到 \`content.bullets\` 字段，包含 2～3 个点)
 - 第2步 (CAPACITY): 关键能力：它能做什么？ (内容填充到 \`content.power_cards\`，包含 3 张卡片。如果合适，可以在 \`content.example\` 中提供一个例子)
-- 第3步 (PROCESS): 工作原理：它是如何工作的？ (内容填充到 \`content.numbered_steps\`，包含 4 个步骤)
+- 第3步 (PROCESS): 工作原理：它是如何工作的？ (内容填充到 \`content.numbered_steps\`，包含 4 个步骤。**注意：在 title 和 description 字段中不要包含数字序号，例如 "1." 或 "第一步："，因为UI会自动添加序号。**)
 - 第4步 (TYPES): 主要类型：有哪些不同种类？ (内容填充到 \`content.bullets\`，介绍 2-3 种主要类型)
 - 第5步 (LEARN): 学习方式：它如何进步？ (内容填充到 \`content.bullets\`，包含 3 个要点)
-- 第6步 (TOOLS): 关键技术：涉及哪些技术？ (**必须**把3-6个技术列表填充到 \`content.tool_chips\`，**必须**同时在 \`content.summary\` 字段中对它们的作用进行总结)
+- 第6步 (TOOLS): 关键技术：涉及哪些技术？ (**必须**生成3-6个技术列表并填充到 \`content.tool_chips\`，**必须**同时在 \`content.summary\` 字段中对它们的作用进行总结)
 - 第7步 (LIFE): 现实应用：它被用在哪里？ (内容填充到 \`content.final_list\`，列出 3-5 个现实生活场景)
 
 现在，请为主题“${topic}”创作一份入门级讲解内容。`;

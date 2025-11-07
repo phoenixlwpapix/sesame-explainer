@@ -208,7 +208,7 @@ const App: React.FC = () => {
           
           {explanation && (
             <>
-              <ExplanationDisplay data={explanation} containerRef={explanationRef} onChipClick={handleChipClick} />
+              <ExplanationDisplay data={explanation} containerRef={explanationRef} onChipClick={handleChipClick} currentTopic={currentTopic} />
               <div className="text-center mt-8 flex flex-wrap justify-center gap-4">
                 <button
                   onClick={handleDownloadHtml}
