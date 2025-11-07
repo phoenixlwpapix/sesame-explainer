@@ -35,8 +35,8 @@ const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({ images, isLoading
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4" onClick={onClose} role="dialog" aria-modal="true">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
         <header className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-xl font-bold text-slate-800">图片预览与下载</h2>
-          <button onClick={onClose} className="text-slate-500 hover:text-slate-800 transition-colors" aria-label="关闭">
+          <h2 className="text-xl font-bold text-[#2d3336]">图片预览与下载</h2>
+          <button onClick={onClose} className="text-[#2d3336] hover:text-[#e14b30] transition-colors" aria-label="关闭">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -67,23 +67,23 @@ const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({ images, isLoading
             </div>
           ) : (
             <div className="flex items-center justify-center h-full">
-                <p className="text-center text-slate-500 py-16">无法生成图片预览。</p>
+                <p className="text-center text-[#2d3336] py-16">无法生成图片预览。</p>
             </div>
           )}
         </main>
 
-        <footer className="p-4 bg-slate-50 border-t rounded-b-xl flex flex-col sm:flex-row justify-end items-center gap-3">
+        <footer className="p-4 bg-[#fffdfa] border-t rounded-b-xl flex flex-col sm:flex-row justify-end items-center gap-3">
             <button
                 onClick={handleDownloadSingleClick}
                 disabled={isLoading}
-                className="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-slate-400 transition-colors"
+                className="w-full sm:w-auto px-5 py-2.5 bg-[#e14b30] text-white font-semibold rounded-lg hover:bg-[#b63c27] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#e14b30] disabled:bg-slate-400 transition-colors"
               >
                 下载为单张长图
             </button>
             <button
               onClick={handleDownloadAllClick}
               disabled={isLoading || images.length === 0}
-              className="w-full sm:w-auto px-5 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-slate-400 transition-colors"
+              className="w-full sm:w-auto px-5 py-2.5 bg-[#2d3336] text-white font-semibold rounded-lg hover:bg-[#4a555c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2d3336] disabled:bg-slate-400 transition-colors"
             >
               下载所有分割图片 ({images.length})
             </button>
