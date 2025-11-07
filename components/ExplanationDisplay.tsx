@@ -87,7 +87,7 @@ const ToolChipsComponent: React.FC<{ items: ToolChip[], summary: string }> = ({ 
   <div>
     <div className="flex flex-wrap gap-3 mb-4">
       {items.map((item, index) => (
-        <div key={index} className="bg-[#fef3f2] dark:bg-red-900/30 border border-[#e14b30] dark:border-red-500/50 rounded-full px-4 py-1.5 text-sm text-[#b63c27] dark:text-red-300 flex items-center gap-2">
+        <div key={index} className="bg-[#fffdfa] dark:bg-slate-700/50 border border-slate-200/80 dark:border-slate-600 rounded-full px-4 py-1.5 text-sm text-[#2d3336] dark:text-slate-300 flex items-center gap-2">
           <span>{item.icon}</span>
           <span><SimpleMarkdown text={item.name} /></span>
         </div>
