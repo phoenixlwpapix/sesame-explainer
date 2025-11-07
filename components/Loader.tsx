@@ -24,9 +24,9 @@ const Loader: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center p-10 bg-white/50 rounded-lg">
-      <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
-      <p className="mt-4 text-slate-600 text-center">{message}</p>
+    <div className="flex flex-col items-center justify-center p-10 bg-white/50 dark:bg-slate-800/50 rounded-lg">
+      <div className="w-12 h-12 border-4 border-blue-500 dark:border-blue-400 border-dashed rounded-full animate-spin"></div>
+      <p className="mt-4 text-slate-600 dark:text-slate-400 text-center">{message}</p>
     </div>
   );
 };
