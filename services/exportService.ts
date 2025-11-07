@@ -1,3 +1,5 @@
+// FIX: Import React to resolve 'Cannot find namespace React' error.
+import React from 'react';
 import type { ExplanationResponse } from '../types';
 
 declare global {
@@ -148,7 +150,7 @@ export const createImageSlices = async (
     const isDarkMode = document.documentElement.classList.contains('dark');
     
     const IMAGE_BASE_WIDTH = 450;
-    const IMAGE_BASE_HEIGHT = IMAGE_BASE_WIDTH * 4 / 3;
+    const MIN_IMAGE_BASE_HEIGHT = IMAGE_BASE_WIDTH * 4 / 3;
     const CANVAS_SCALE = 2;
 
     await new Promise(resolve => setTimeout(resolve, 50));
@@ -167,7 +169,7 @@ export const createImageSlices = async (
       sliceContainer.className = isDarkMode ? "dark" : "";
       
       sliceContainer.style.width = `${IMAGE_BASE_WIDTH}px`;
-      sliceContainer.style.height = `${IMAGE_BASE_HEIGHT}px`;
+      sliceContainer.style.minHeight = `${MIN_IMAGE_BASE_HEIGHT}px`;
       sliceContainer.style.position = 'absolute';
       sliceContainer.style.left = '-9999px';
       sliceContainer.style.top = '0';
@@ -201,7 +203,6 @@ export const createImageSlices = async (
           useCORS: true,
           backgroundColor: null,
           width: IMAGE_BASE_WIDTH,
-          height: IMAGE_BASE_HEIGHT,
           windowWidth: IMAGE_BASE_WIDTH,
         });
         imageUrls.push(canvas.toDataURL('image/png'));
