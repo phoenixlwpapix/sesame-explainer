@@ -58,7 +58,7 @@ export const generateExplanation = async (topic: string): Promise<ExplanationRes
 - 第3步 (PROCESS): 工作原理：它是如何工作的？ (内容填充到 \`content.numbered_steps\`，包含 4 个步骤)
 - 第4步 (TYPES): 主要类型：有哪些不同种类？ (内容填充到 \`content.bullets\`，介绍 2-3 种主要类型)
 - 第5步 (LEARN): 学习方式：它如何进步？ (内容填充到 \`content.bullets\`，包含 3 个要点)
-- 第6步 (TOOLS): 关键技术：涉及哪些技术？ (技术列表填充到 \`content.tool_chips\`，**必须**同时在 \`content.summary\` 字段中对它们的作用进行总结)
+- 第6步 (TOOLS): 关键技术：涉及哪些技术？ (**必须**把3-6个技术列表填充到 \`content.tool_chips\`，**必须**同时在 \`content.summary\` 字段中对它们的作用进行总结)
 - 第7步 (LIFE): 现实应用：它被用在哪里？ (内容填充到 \`content.final_list\`，列出 3-5 个现实生活场景)
 
 现在，请为主题“${topic}”创作一份入门级讲解内容。`;
@@ -84,5 +84,22 @@ export const generateExplanation = async (topic: string): Promise<ExplanationRes
             console.error("导致错误的原始文本:", jsonText);
         }
         throw new Error("抱歉，AI 在生成解释时遇到问题。请检查您的输入或稍后重试。");
+    }
+};
+
+export const generateChipExplanation = async (chipName: string, contextTopic: string): Promise<string> => {
+    const prompt = `你是一位知识讲解专家。请用通俗易懂的语言，为初学者解释在“${contextTopic}”这个领域中，“${chipName}”是什么意思，以及它的作用。请保持简洁，一两句话即可。请直接输出解释文本，不要包含任何多余的前缀或标题。`;
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                temperature: 0.2,
+            },
+        });
+        return response.text.trim();
+    } catch (error) {
+        console.error("生成芯片解释时出错:", error);
+        throw new Error("抱歉，AI 在解释这个概念时遇到问题。");
     }
 };

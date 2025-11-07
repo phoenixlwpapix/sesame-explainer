@@ -83,14 +83,19 @@ const NumberedStepsComponent: React.FC<{ items: NumberedStep[] }> = ({ items }) 
   </div>
 );
 
-const ToolChipsComponent: React.FC<{ items: ToolChip[], summary: string }> = ({ items, summary }) => (
+const ToolChipsComponent: React.FC<{ items: ToolChip[], summary: string, onChipClick: (chipName: string) => void }> = ({ items, summary, onChipClick }) => (
   <div>
     <div className="flex flex-wrap gap-3 mb-4">
       {items.map((item, index) => (
-        <div key={index} className="bg-[#fffdfa] dark:bg-slate-700/50 border border-slate-200/80 dark:border-slate-600 rounded-full px-4 py-1.5 text-sm text-[#2d3336] dark:text-slate-300 flex items-center gap-2">
+        <button
+          key={index}
+          onClick={() => onChipClick(item.name)}
+          className="bg-[#fffdfa] dark:bg-slate-700/50 border border-slate-200/80 dark:border-slate-600 rounded-full px-4 py-1.5 text-sm text-[#2d3336] dark:text-slate-300 flex items-center gap-2 hover:border-[#e14b30] dark:hover:border-red-500 hover:text-[#e14b30] dark:hover:text-red-300 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#e14b30] dark:focus:ring-offset-slate-800"
+          aria-label={`解释 ${item.name}`}
+        >
           <span>{item.icon}</span>
           <span><SimpleMarkdown text={item.name} /></span>
-        </div>
+        </button>
       ))}
     </div>
     <div className="bg-[#fef3f2] dark:bg-red-900/20 border-l-4 border-[#e14b30] dark:border-red-500/50 p-4 rounded-r-lg text-[#b63c27] dark:text-red-300">
@@ -98,6 +103,7 @@ const ToolChipsComponent: React.FC<{ items: ToolChip[], summary: string }> = ({ 
     </div>
   </div>
 );
+
 
 const FinalListComponent: React.FC<{ items: string[] }> = ({ items }) => (
     <ul className="space-y-3">
@@ -112,18 +118,18 @@ const FinalListComponent: React.FC<{ items: string[] }> = ({ items }) => (
     </ul>
 );
 
-const SectionContentComponent: React.FC<{ content: SectionContent }> = ({ content }) => {
+const SectionContentComponent: React.FC<{ content: SectionContent, onChipClick: (chipName: string) => void }> = ({ content, onChipClick }) => {
   if (content.bullets) return <BulletListComponent items={content.bullets} />;
   if (content.power_cards) return <PowerCardsComponent items={content.power_cards} example={content.example} />;
   if (content.numbered_steps) return <NumberedStepsComponent items={content.numbered_steps} />;
-  if (content.tool_chips && content.summary) return <ToolChipsComponent items={content.tool_chips} summary={content.summary} />;
+  if (content.tool_chips && content.summary) return <ToolChipsComponent items={content.tool_chips} summary={content.summary} onChipClick={onChipClick} />;
   if (content.final_list) return <FinalListComponent items={content.final_list} />;
   return null;
 };
 
 const stepNames: { [key: number]: string } = {
   1: '初识',
-  2: '神通',
+  2: '妙用',
   3: '揭秘',
   4: '分身',
   5: '修炼',
@@ -131,7 +137,7 @@ const stepNames: { [key: number]: string } = {
   7: '身边',
 };
 
-const SectionCard: React.FC<{ section: Section }> = ({ section }) => {
+const SectionCard: React.FC<{ section: Section, onChipClick: (chipName: string) => void }> = ({ section, onChipClick }) => {
   const IconComponent = iconMap[section.iconKey] || InfoIcon;
   const iconColorClass = 'text-[#e14b30]';
   const stepName = stepNames[section.step] || `步骤 ${section.step}`;
@@ -147,12 +153,12 @@ const SectionCard: React.FC<{ section: Section }> = ({ section }) => {
         </h3>
       </div>
       {section.description && <p className="text-[#2d3336] dark:text-slate-300 mb-5"><SimpleMarkdown text={section.description} /></p>}
-      <SectionContentComponent content={section.content} />
+      <SectionContentComponent content={section.content} onChipClick={onChipClick} />
     </div>
   );
 };
 
-const ExplanationDisplay: React.FC<{ data: ExplanationResponse, containerRef: React.Ref<HTMLDivElement> }> = ({ data, containerRef }) => {
+const ExplanationDisplay: React.FC<{ data: ExplanationResponse, containerRef: React.Ref<HTMLDivElement>, onChipClick: (chipName: string) => void }> = ({ data, containerRef, onChipClick }) => {
   return (
     <div ref={containerRef} className="max-w-4xl mx-auto my-8 p-4 md:p-8 bg-[#fffdfa] dark:bg-slate-800/50 rounded-2xl shadow-lg dark:shadow-xl dark:shadow-slate-950/50">
       <div className="text-center mb-8">
@@ -160,7 +166,7 @@ const ExplanationDisplay: React.FC<{ data: ExplanationResponse, containerRef: Re
         <p className="mt-2 text-[#2d3336] dark:text-slate-300"><SimpleMarkdown text={data.subtitle} /></p>
       </div>
       {data.sections.map(section => (
-        <SectionCard key={section.step} section={section} />
+        <SectionCard key={section.step} section={section} onChipClick={onChipClick} />
       ))}
     </div>
   );

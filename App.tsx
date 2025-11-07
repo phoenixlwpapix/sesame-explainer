@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { generateExplanation } from './services/geminiService';
+import { generateExplanation, generateChipExplanation } from './services/geminiService';
 import {
   downloadAsHtml,
   downloadAsSingleImage,
@@ -12,11 +12,13 @@ import ExplanationDisplay from './components/ExplanationDisplay';
 import Loader from './components/Loader';
 import ImagePreviewModal from './components/ImagePreviewModal';
 import ThemeToggle from './components/ThemeToggle';
+import ChipExplanationModal from './components/ChipExplanationModal';
 
-const popularTopics = ["Sora", "Gemini", "Kimi", "Claude", "大语言模型", "提示词工程"];
+const popularTopics = ["大语言模型", "提示词工程", "具身智能", "钝感力", "世界模拟器"];
 
 const App: React.FC = () => {
   const [topic, setTopic] = useState<string>('');
+  const [currentTopic, setCurrentTopic] = useState<string>('');
   const [explanation, setExplanation] = useState<ExplanationResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,8 +28,13 @@ const App: React.FC = () => {
   const [isSlicing, setIsSlicing] = useState<boolean>(false);
   const [slicedImages, setSlicedImages] = useState<string[]>([]);
 
-  const handleGenerate = useCallback(async (currentTopic: string) => {
-    if (!currentTopic.trim()) {
+  const [isChipModalOpen, setIsChipModalOpen] = useState<boolean>(false);
+  const [selectedChip, setSelectedChip] = useState<string | null>(null);
+  const [chipExplanation, setChipExplanation] = useState<string | null>(null);
+  const [isChipLoading, setIsChipLoading] = useState<boolean>(false);
+
+  const handleGenerate = useCallback(async (topicToGenerate: string) => {
+    if (!topicToGenerate.trim()) {
       setError('请输入一个你想知道的东西。');
       return;
     }
@@ -36,14 +43,40 @@ const App: React.FC = () => {
     setExplanation(null);
 
     try {
-      const result = await generateExplanation(currentTopic);
+      const result = await generateExplanation(topicToGenerate);
       setExplanation(result);
+      setCurrentTopic(topicToGenerate);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : '抱歉，发生未知错误，请重试。');
     } finally {
       setIsLoading(false);
     }
   }, []);
+
+  const fetchChipExplanation = useCallback(async (chipName: string) => {
+    if (!currentTopic) {
+      setChipExplanation("无法获取当前主题的上下文信息。");
+      return;
+    };
+
+    setIsChipLoading(true);
+    setChipExplanation(null);
+    try {
+      const result = await generateChipExplanation(chipName, currentTopic);
+      setChipExplanation(result);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '未知错误';
+      setChipExplanation(`加载失败: ${message}`);
+    } finally {
+      setIsChipLoading(false);
+    }
+  }, [currentTopic]);
+
+  const handleChipClick = (chipName: string) => {
+    setSelectedChip(chipName);
+    setIsChipModalOpen(true);
+    fetchChipExplanation(chipName);
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -55,6 +88,12 @@ const App: React.FC = () => {
     handleGenerate(selectedTopic);
   };
   
+  const handleInputFocus = () => {
+    if (explanation) {
+      setTopic('');
+    }
+  };
+
   const handleDownloadHtml = () => {
     downloadAsHtml(explanationRef, explanation, topic);
   };
@@ -139,7 +178,7 @@ const App: React.FC = () => {
             </svg>
             <h1 className="text-4xl font-bold tracking-tight text-[#2d3336] dark:text-slate-100">芝麻问答</h1>
           </div>
-          <p className="mt-2 text-lg text-[#2d3336] dark:text-slate-300">打开知识的“芝麻之门”，让复杂的概念”粒粒可见“。</p>
+          <p className="mt-2 text-lg text-[#2d3336] dark:text-slate-300">打开知识的“芝麻之门”，让复杂的概念”粒粒在目“。</p>
         </header>
 
         <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md dark:shadow-lg dark:shadow-slate-950/50 border dark:border-slate-700">
@@ -147,6 +186,7 @@ const App: React.FC = () => {
             <input
               type="text"
               value={topic}
+              onFocus={handleInputFocus}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="输入一个您想了解的概念，例如“区块链”或“量子计算”"
               className="flex-grow w-full px-4 py-3 bg-white dark:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-[#e14b30] focus:border-[#e14b30] dark:focus:ring-offset-slate-800 dark:placeholder-slate-400 outline-none transition"
@@ -168,7 +208,7 @@ const App: React.FC = () => {
           
           {explanation && (
             <>
-              <ExplanationDisplay data={explanation} containerRef={explanationRef} />
+              <ExplanationDisplay data={explanation} containerRef={explanationRef} onChipClick={handleChipClick} />
               <div className="text-center mt-8 flex flex-wrap justify-center gap-4">
                 <button
                   onClick={handleDownloadHtml}
@@ -223,6 +263,14 @@ const App: React.FC = () => {
             topic={topic}
         />
       )}
+
+      <ChipExplanationModal
+        isOpen={isChipModalOpen}
+        onClose={() => setIsChipModalOpen(false)}
+        chipName={selectedChip}
+        explanation={chipExplanation}
+        isLoading={isChipLoading}
+      />
     </div>
   );
 };
