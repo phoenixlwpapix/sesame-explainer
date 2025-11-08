@@ -184,7 +184,10 @@ const ExplanationDisplay: React.FC<ExplanationDisplayProps> = ({ data, container
   return (
     <div ref={containerRef} className="max-w-4xl mx-auto my-8 p-4 md:p-8 bg-[#fffdfa] dark:bg-slate-800/50 rounded-2xl shadow-lg dark:shadow-xl dark:shadow-slate-950/50">
       <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-[#2d3336] dark:text-slate-100 tracking-tight"><SimpleMarkdown text={displayTitle} /></h1>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-[#e14b30] tracking-tight">
+          <span>一图看懂：</span>
+          <SimpleMarkdown text={displayTitle} />
+        </h1>
         <p className="mt-2 text-lg text-[#2d3336] dark:text-slate-300">
           {data.topicEmoji && <span className="mr-2">{data.topicEmoji}</span>}
           <SimpleMarkdown text={displaySubtitle} />

@@ -178,7 +178,7 @@ const App: React.FC = () => {
             </svg>
             <h1 className="text-4xl font-bold tracking-tight text-[#2d3336] dark:text-slate-100">芝麻问答</h1>
           </div>
-          <p className="mt-2 text-lg text-[#2d3336] dark:text-slate-300">打开知识的“芝麻之门”，让复杂的概念”粒粒在目“。</p>
+          <p className="mt-2 text-lg text-[#2d3336] dark:text-slate-300">打开知识的“芝麻之门”  让复杂概念”粒粒在目“</p>
         </header>
 
         <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md dark:shadow-lg dark:shadow-slate-950/50 border dark:border-slate-700">
