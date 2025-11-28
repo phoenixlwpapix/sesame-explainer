@@ -14,7 +14,7 @@ import ImagePreviewModal from './components/ImagePreviewModal';
 import ThemeToggle from './components/ThemeToggle';
 import ChipExplanationModal from './components/ChipExplanationModal';
 
-const popularTopics = ["大语言模型", "提示词工程", "具身智能", "钝感力", "世界模拟器"];
+const popularTopics = ["大语言模型", "具身智能", "钝感力", "RAG", "提示词工程", "生酮饮食"];
 
 const App: React.FC = () => {
   const [topic, setTopic] = useState<string>('');
